@@ -32,21 +32,34 @@ import optax.tree
 
 # Using L-BFGS as a Gradient Transformation
 
-vector_dimension = 8
-optimizer = jnp.ones(vector_dimension)
-matrix = jrd.normal(jrd.PRNGKey(0), (vector_dimension, vector_dimension))
+dimension = 8
+# Create an array with dimension size of variable "dimension"
+    # As is, this array will be a 1D array full of #"dimension" ones
+true_min = jnp.ones(dimension)
+# Generate a sample of random normal numbers
+    # Needs a key to be "pure" (same input --> same output)
+        # Same key --> Same array generated
+# Produces a matrix of size dimension x dimension
+    # where each element is a randomly sampled number
+matrix = jrd.normal(jrd.PRNGKey(0), (dimension, dimension))
+# Compute the dot product of matrix and the transpose of matrix
+    # Creates a symmetric matrix --> produces REAL eigenvalues
 matrix = matrix.dot(matrix.T)
 
 def funct(w):
-    return 0.5 * (w - optimizer).dot(matrix.dot(w - optimizer))
+    # w - true_min ==> satisfies the SECANT CONDITION 
+        # As true_min is the parameter before the current parameter (w)
+    return 0.5 * (w - true_min).dot(matrix.dot(w - true_min))
 
 # Define optimizer 
+
+# Where lr is the stepsize (or learning rate)
 lr = 1e-1 
 opt = optax.scale_by_lbfgs()
 
 # Initialize optimization
-w = jrd.normal(jrd.PRNGKey(1), (vector_dimension,))
-state = opt.init(optimizer)
+w = jrd.normal(jrd.PRNGKey(1), (dimension,))
+state = opt.init(true_min)
 
 # Run optimization 
 for i in range(16):
