@@ -21,9 +21,9 @@ def funct(w):
     return jnp.sum(jnp.abs(w))
 
 # Linesearch
-linesearch = optax.scale_by_backtracking_linesearch(max_backtracking_steps=15)
+linesearch = optax.scale_by_backtracking_linesearch(max_backtracking_steps=15, store_grad=True)
 # # Can also do below
-# linesearch = optax.scale_by_zoom_linesearch(max_linesearch_steps=15)
+# linesearch = optax.scale_by_zoom_linesearch(max_linesearch_steps=15, store_grad=True)
 
 # Optimizer
 opt = optax.chain(
