@@ -64,10 +64,15 @@ state = opt.init(true_min)
 
 # Run optimization 
 for i in range(16):
+    # Computes the function value and its gradient
+        # Returns a tuple
     v, g = jax.value_and_grad(funct)(w)
-    print(g)
     print(f'Iteration: {i}, Value: {v:.2e}')
+    # Transforms gradient into parameter update
+        # Updates optimizer's state
     u, state = opt.update(g, state, w)
+    # This is the update rule
+        # Where u is gradient update 
     w = w - lr * u
 
 print(f'Final value: {funct(w):.2e}')
