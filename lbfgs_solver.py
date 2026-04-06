@@ -55,6 +55,7 @@ def funct(w):
 
 # Where lr is the stepsize (or learning rate)
 lr = 1e-1 
+# Scales updates by L-BFGS
 opt = optax.scale_by_lbfgs()
 
 # Initialize optimization
@@ -64,6 +65,7 @@ state = opt.init(true_min)
 # Run optimization 
 for i in range(16):
     v, g = jax.value_and_grad(funct)(w)
+    print(g)
     print(f'Iteration: {i}, Value: {v:.2e}')
     u, state = opt.update(g, state, w)
     w = w - lr * u
